@@ -3,215 +3,441 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web SSH Terminal</title>
+    <title>Web SSH Terminal Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="font-[-apple-system,BlinkMacSystemFont,'Segoe UI'] min-h-screen" style="background-color: rgba(36, 37, 41, 1); line-height: 1.4; color: rgba(255, 255, 255, 1);">
     <div class="container">
-        <header class="header">
-            <div class="logo">
-                <i class="fas fa-terminal"></i>
-                <h1>Web SSH Terminal</h1>
+        <!-- Header -->
+        <header class="flex justify-between items-center w-full h-[60px] pr-[24px] pl-[24px] rounded-br-[8px] rounded-bl-[8px]" style="background-color: rgba(42, 49, 57, 1);">
+            <div class="flex items-center">
+                <div class="flex justify-center items-center w-[24px] h-[24px] mr-[12px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" style="background-color: rgba(0, 112, 250, 1);">
+                    <i class="fas fa-terminal" style="color: rgba(255, 255, 255, 1);"></i>
+                </div>
+                <h1 class="text-[20px] font-medium" style="color: rgba(255, 255, 255, 1);">Web SSH Terminal Pro</h1>
             </div>
-            <div class="status" id="status">
-                <span class="status-dot disconnected"></span>
-                <span class="status-text">未连接</span>
+            <div class="flex items-center">
+                <div class="connection-inactive flex items-center mr-[18px] pt-[6px] pr-[12px] pb-[6px] pl-[12px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" id="statusContainer">
+                    <div class="w-[8px] h-[8px] mr-[6px] rounded-tl-full rounded-tr-full rounded-br-full rounded-bl-full" style="background-color: rgba(255, 84, 91, 1);" id="statusDot"></div>
+                    <span class="text-[12px]" id="statusText">未连接</span>
+                </div>
+                <div class="flex justify-center items-center w-[36px] h-[36px] mr-[12px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" style="background-color: rgba(58, 65, 72, 1);" onclick="toggleSettings()">
+                    <i class="fas fa-gear" style="color: rgba(176, 184, 193, 1);"></i>
+                </div>
+                <div class="flex justify-center items-center w-[36px] h-[36px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" style="background-color: rgba(58, 65, 72, 1);" onclick="toggleAI()">
+                    <i class="fas fa-robot" style="color: rgba(176, 184, 193, 1);"></i>
+                </div>
             </div>
         </header>
 
-        <div class="main-content">
-            <div class="sidebar" id="sidebar">
-                <div class="connection-form">
-                    <h3><i class="fas fa-server"></i> 连接配置</h3>
-                    
-                    <div class="form-group">
-                        <label>服务器地址</label>
-                        <input type="text" id="host" placeholder="192.168.1.100" value="localhost">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>端口</label>
-                        <input type="number" id="port" placeholder="22" value="22">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>用户名</label>
-                        <input type="text" id="username" placeholder="root">
-                    </div>
+        <!-- Main Content -->
+        <div class="flex w-full mt-[12px] gap-[12px]">
+            <!-- Sidebar -->
+            <div class="flex flex-col shrink-0 w-[280px] pt-[18px] pr-[18px] pb-[18px] pl-[18px] rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px] rounded-bl-[8px]" style="background-color: rgba(42, 49, 57, 1);" id="sidebar">
+                <div class="flex justify-between items-center mb-[12px] sidebar-header">
+                    <h2 class="text-[14px] font-medium">连接配置</h2>
+                    <button class="flex justify-center items-center w-[24px] h-[24px] rounded-tl-[4px] rounded-tr-[4px] rounded-br-[4px] rounded-bl-[4px]" style="background-color: rgba(58, 65, 72, 1);" id="collapseSidebarBtn" title="收起侧边栏">
+                        <i class="fas fa-chevron-left text-[10px]" style="color: rgba(176, 184, 193, 1);" id="collapseIcon"></i>
+                    </button>
+                </div>
+                <div class="sidebar-content">
+                <div class="mb-[12px]">
+                    <label class="block mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">服务器地址</label>
+                    <input type="text" id="host" placeholder="example.com" class="w-full h-[36px] pr-[12px] pl-[12px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px]" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);">
+                </div>
+                <div class="mb-[12px]">
+                    <label class="block mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">端口</label>
+                    <input type="text" id="port" value="22" class="w-full h-[36px] pr-[12px] pl-[12px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px]" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);">
+                </div>
+                <div class="mb-[12px]">
+                    <label class="block mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">用户名</label>
+                    <input type="text" id="username" placeholder="root" class="w-full h-[36px] pr-[12px] pl-[12px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px]" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);">
+                </div>
                     
 
 
-                    <div class="proxy-section">
-                        <div class="form-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="useProxy">
-                                <span class="checkmark"></span>
-                                使用代理连接
-                            </label>
-                        </div>
-                        
-                        <div class="proxy-config" id="proxyConfig" style="display: none;">
-                            <div class="form-group">
-                                <label>代理地址</label>
-                                <input type="text" id="proxyHost" placeholder="127.0.0.1">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>代理端口</label>
-                                <input type="number" id="proxyPort" placeholder="1080">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>代理类型</label>
-                                <select id="proxyType">
-                                    <option value="5">SOCKS5</option>
-                                    <option value="4">SOCKS4</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>代理用户名 (可选)</label>
-                                <input type="text" id="proxyUsername" placeholder="用户名">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>代理密码 (可选)</label>
-                                <input type="password" id="proxyPassword" placeholder="密码">
-                            </div>
-                        </div>
+                <div class="flex items-center mb-[12px]">
+                    <input type="checkbox" id="useProxy" class="mr-[6px]" style="background-color: rgba(58, 65, 72, 1);">
+                    <label class="text-[12px]" style="color: rgba(176, 184, 193, 1);">使用代理连接</label>
+                </div>
+                
+                <div id="proxyConfig" style="display: none;" class="mb-[12px] p-[12px] rounded-[6px] bg-[rgba(26,29,33,1)]">
+                    <div class="mb-[12px]">
+                        <label class="block mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">代理类型</label>
+                        <select id="proxyType" class="w-full h-[36px] pr-[12px] pl-[12px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px]" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);">
+                            <option value="5">SOCKS5</option>
+                            <option value="4">SOCKS4</option>
+                        </select>
                     </div>
-
-                    <div class="auth-method">
-                        <div class="form-group">
-                            <label>认证方式</label>
-                            <select id="authMethod">
-                                <option value="password">密码认证</option>
-                                <option value="key">密钥认证</option>
-                            </select>
-                        </div>
-                        
-                        <div class="auth-password" id="authPassword">
-                            <div class="form-group">
-                                <label>密码</label>
-                                <input type="password" id="password" placeholder="密码">
-                            </div>
-                        </div>
-                        
-                        <div class="auth-key" id="authKey" style="display: none;">
-                            <div class="form-group">
-                                <label>私钥</label>
-                                <textarea id="privateKey" placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
-                            </div>
-                        </div>
+                    <div class="mb-[12px]">
+                        <label class="block mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">代理地址</label>
+                        <input type="text" id="proxyHost" placeholder="127.0.0.1" class="w-full h-[36px] pr-[12px] pl-[12px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px]" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);">
                     </div>
-
-                    <div class="form-actions">
-                        <button id="connectBtn" class="btn btn-primary">
-                            <i class="fas fa-plug"></i> 连接
-                        </button>
-                        <button id="disconnectBtn" class="btn btn-secondary" disabled>
-                            <i class="fas fa-times"></i> 断开
-                        </button>
+                    <div class="mb-[12px]">
+                        <label class="block mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">代理端口</label>
+                        <input type="text" id="proxyPort" placeholder="1080" class="w-full h-[36px] pr-[12px] pl-[12px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px]" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);">
+                    </div>
+                    <div class="mb-[12px]">
+                        <label class="block mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">代理用户名 (可选)</label>
+                        <input type="text" id="proxyUsername" placeholder="用户名" class="w-full h-[36px] pr-[12px] pl-[12px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px]" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);">
+                    </div>
+                    <div class="mb-[12px]">
+                        <label class="block mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">代理密码 (可选)</label>
+                        <input type="password" id="proxyPassword" placeholder="密码" class="w-full h-[36px] pr-[12px] pl-[12px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px]" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);">
                     </div>
                 </div>
 
-                <div class="saved-connections">
-                    <h3><i class="fas fa-bookmark"></i> 保存的连接</h3>
-                    <div class="connection-list" id="connectionList">
-                        <!-- 保存的连接将在这里显示 -->
+                <div class="mb-[12px]">
+                    <label class="block mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">认证方式</label>
+                    <select id="authMethod" class="w-full h-[36px] pr-[12px] pl-[12px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px]" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);">
+                        <option value="password">密码认证</option>
+                        <option value="key">密钥认证</option>
+                    </select>
+                </div>
+                
+                <div id="authPassword" class="mb-[12px]">
+                    <label class="block mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">密码</label>
+                    <input type="password" id="password" placeholder="密码" class="w-full h-[36px] pr-[12px] pl-[12px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px]" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);">
+                </div>
+                
+                <div id="authKey" style="display: none;" class="mb-[12px]">
+                    <label class="block mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">私钥</label>
+                    <textarea id="privateKey" placeholder="-----BEGIN PRIVATE KEY-----" class="w-full h-[120px] pr-[12px] pl-[12px] pt-[8px] pb-[8px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px] resize-none" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);"></textarea>
+                </div>
+
+                <div class="flex gap-[6px] mb-[18px]">
+                    <button id="connectBtn" class="flex items-center justify-center flex-1 h-[36px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px] font-medium" style="background-color: rgba(0, 112, 250, 1); color: rgba(255, 255, 255, 1);">
+                        <i class="fas fa-plug mr-[6px]"></i> 连接
+                    </button>
+                    <button id="disconnectBtn" class="flex items-center justify-center flex-1 h-[36px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px] font-medium" style="background-color: rgba(58, 65, 72, 1); color: rgba(176, 184, 193, 1);" disabled>
+                        <i class="fas fa-times mr-[6px]"></i> 断开
+                    </button>
+                </div>
+
+                <div class="flex justify-between items-center mb-[12px]">
+                    <h2 class="text-[14px] font-medium">已保存连接</h2>
+                    <button class="text-[12px]" style="color: rgba(0, 112, 250, 1);" onclick="showSavedConnections()">管理全部</button>
+                </div>
+                <div class="overflow-y-auto flex-1" id="connectionsList">
+                    <!-- 动态生成的连接列表 -->
+                </div>
+                </div>
+            </div>
+
+            <!-- Terminal Area -->
+            <div class="flex flex-col flex-1 rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px] rounded-bl-[8px]" style="background-color: rgba(26, 29, 33, 1);">
+                <div class="flex justify-between items-center h-[40px] pr-[18px] pl-[18px] rounded-tl-[8px] rounded-tr-[8px]" style="background-color: rgba(42, 49, 57, 1);">
+                    <div class="flex items-center">
+                        <span class="text-[14px] font-medium">Terminal</span>
+                        <span class="ml-[12px] text-[12px]" style="color: rgba(176, 184, 193, 1);" id="sessionInfo">Session: Not Connected</span>
                     </div>
-                    <button id="saveConnectionBtn" class="btn btn-outline">
-                        <i class="fas fa-save"></i> 保存当前连接
+                    <div class="flex items-center">
+                        <button class="flex justify-center items-center w-[28px] h-[28px] mr-[6px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" style="background-color: rgba(58, 65, 72, 1);" id="clearBtn" title="清屏">
+                            <i class="fas fa-broom text-[12px]" style="color: rgba(176, 184, 193, 1);"></i>
+                        </button>
+                        <button class="flex justify-center items-center w-[28px] h-[28px] mr-[6px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" style="background-color: rgba(58, 65, 72, 1);" id="fullscreenBtn" title="全屏">
+                            <i class="fas fa-expand text-[12px]" style="color: rgba(176, 184, 193, 1);"></i>
+                        </button>
+                        <button class="flex justify-center items-center w-[28px] h-[28px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" style="background-color: rgba(58, 65, 72, 1);" id="toggleSidebarBtn" title="切换侧边栏">
+                            <i class="fas fa-bars text-[12px]" style="color: rgba(176, 184, 193, 1);"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="terminal-text overflow-y-auto flex-1 pt-[18px] pr-[18px] pb-[18px] pl-[18px]" id="terminal">
+                    <div class="welcome-message text-center py-[60px]">
+                        <h2 class="text-[24px] font-medium mb-[12px]">欢迎使用 Web SSH Terminal Pro</h2>
+                        <p class="text-[14px] mb-[24px]" style="color: rgba(176, 184, 193, 1);">请在左侧配置连接信息，然后点击连接按钮开始使用。</p>
+                        <div class="flex justify-center gap-[24px] mt-[24px]">
+                            <div class="flex flex-col items-center">
+                                <div class="flex justify-center items-center w-[48px] h-[48px] mb-[8px] rounded-full" style="background-color: rgba(0, 112, 250, 0.2);">
+                                    <i class="fas fa-server" style="color: rgba(0, 112, 250, 1);"></i>
+                                </div>
+                                <span class="text-[12px]" style="color: rgba(176, 184, 193, 1);">SSH 连接支持</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="flex justify-center items-center w-[48px] h-[48px] mb-[8px] rounded-full" style="background-color: rgba(0, 112, 250, 0.2);">
+                                    <i class="fas fa-shield-alt" style="color: rgba(0, 112, 250, 1);"></i>
+                                </div>
+                                <span class="text-[12px]" style="color: rgba(176, 184, 193, 1);">代理连接</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="flex justify-center items-center w-[48px] h-[48px] mb-[8px] rounded-full" style="background-color: rgba(0, 112, 250, 0.2);">
+                                    <i class="fas fa-robot" style="color: rgba(0, 112, 250, 1);"></i>
+                                </div>
+                                <span class="text-[12px]" style="color: rgba(176, 184, 193, 1);">AI 智能助手</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Assistant -->
+            <div class="flex flex-col shrink-0 w-[320px] h-[600px] rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px] rounded-bl-[8px]" style="background-color: rgba(42, 49, 57, 1);" id="aiAssistant">
+                <div class="flex justify-between items-center h-[40px] pr-[18px] pl-[18px] rounded-tl-[8px] rounded-tr-[8px]" style="background-color: rgba(58, 65, 72, 1);">
+                    <div class="flex items-center">
+                        <i class="fas fa-robot mr-[6px] text-[14px]"></i>
+                        <span class="text-[14px] font-medium">AI 助手</span>
+                    </div>
+                    <button class="flex justify-center items-center w-[28px] h-[28px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" style="background-color: rgba(42, 49, 57, 1);" id="closeAiBtn">
+                        <i class="fas fa-times text-[12px]" style="color: rgba(176, 184, 193, 1);"></i>
+                    </button>
+                </div>
+                <div class="overflow-y-auto flex-1 pt-[18px] pr-[18px] pb-[18px] pl-[18px]" id="chatMessages">
+                    <div class="mb-[12px] pt-[12px] pr-[12px] pb-[12px] pl-[12px] rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px] rounded-bl-[8px]" style="background-color: rgba(26, 29, 33, 1);">
+                        <div class="mb-[6px] text-[12px]" style="color: rgba(176, 184, 193, 1);">AI 助手</div>
+                        <div class="text-[12px]">
+                            <span>您好！我是您的终端助手。请问有什么可以帮到您的？我可以：</span>
+                            <ul class="mt-[6px] pl-[24px]">
+                                <li>解释命令的使用方法</li>
+                                <li>提供命令示例</li>
+                                <li>帮助排查 SSH 连接问题</li>
+                                <li>提供 Linux/Unix 技巧</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center h-[60px] pt-[12px] pr-[12px] pb-[12px] pl-[12px] border-t-solid border-t-[1px]" style="border-top-color: rgba(58, 65, 72, 1);">
+                    <input type="text" id="chatInput" placeholder="向 AI 助手提问..." class="flex-1 h-[36px] mr-[6px] pr-[12px] pl-[12px] outline-none rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px] text-[12px]" style="background-color: rgba(58, 65, 72, 1); color: rgba(255, 255, 255, 1);">
+                    <button id="sendChatBtn" class="flex justify-center items-center w-[36px] h-[36px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" style="background-color: rgba(0, 112, 250, 1);">
+                        <i class="fas fa-paper-plane" style="color: rgba(255, 255, 255, 1);"></i>
                     </button>
                 </div>
             </div>
+        </div>
 
-            <div class="main-panel">
-                <div class="terminal-container">
-                    <div class="terminal-header">
-                        <div class="terminal-tabs">
-                            <div class="tab active" data-tab="terminal">
-                                <i class="fas fa-terminal"></i>
-                                <span>Terminal</span>
-                            </div>
-                        </div>
-                        <div class="terminal-controls">
-                            <button id="clearBtn" class="control-btn" title="清屏">
-                                <i class="fas fa-broom"></i>
-                            </button>
-                            <button id="toggleAiBtn" class="control-btn" title="AI助手">
-                                <i class="fas fa-robot"></i>
-                            </button>
-                            <button id="toggleSidebarBtn" class="control-btn" title="切换侧边栏">
-                                <i class="fas fa-bars"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="tab-content">
-                        <div class="tab-panel active" id="terminal-panel">
-                            <div class="terminal" id="terminal">
-                                <div class="welcome-message">
-                                    <i class="fas fa-rocket"></i>
-                                    <h2>欢迎使用 Web SSH Terminal</h2>
-                                    <p>请在左侧配置连接信息，然后点击连接按钮开始使用</p>
-                                </div>
-                            </div>
-                        </div>
-                        
+        <!-- File Manager Panel -->
+        <div class="w-full mt-[12px] rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px] rounded-bl-[8px]" style="background-color: rgba(42, 49, 57, 1);" id="fileManagerPanel">
+            <div class="flex justify-between items-center h-[40px] pr-[18px] pl-[18px] rounded-tl-[8px] rounded-tr-[8px]" style="background-color: rgba(58, 65, 72, 1);">
+                <div class="flex items-center">
+                    <i class="fas fa-folder mr-[6px] text-[14px]"></i>
+                    <span class="text-[14px] font-medium">文件管理器</span>
+                    <span class="ml-[12px] text-[12px]" style="color: rgba(176, 184, 193, 1);" id="currentPath">/</span>
+                </div>
+                <div class="flex items-center">
+                    <button class="flex justify-center items-center w-[28px] h-[28px] mr-[6px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" style="background-color: rgba(58, 65, 72, 1);" id="refreshFilesBtn" title="刷新">
+                        <i class="fas fa-sync text-[12px]" style="color: rgba(176, 184, 193, 1);"></i>
+                    </button>
+                    <button class="flex justify-center items-center w-[28px] h-[28px] mr-[6px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" style="background-color: rgba(58, 65, 72, 1);" id="goUpBtn" title="上级目录">
+                        <i class="fas fa-level-up-alt text-[12px]" style="color: rgba(176, 184, 193, 1);"></i>
+                    </button>
+                    <button class="flex justify-center items-center w-[28px] h-[28px] rounded-tl-[6px] rounded-tr-[6px] rounded-br-[6px] rounded-bl-[6px]" style="background-color: rgba(58, 65, 72, 1);" id="toggleFileManagerBtn" title="切换文件管理器">
+                        <i class="fas fa-chevron-down text-[12px]" style="color: rgba(176, 184, 193, 1);"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="h-[200px] overflow-y-auto pt-[12px] pr-[18px] pb-[12px] pl-[18px]" id="fileManagerContent">
+                <div class="text-center py-[40px]" id="fileManagerPlaceholder">
+                    <i class="fas fa-folder-open text-[32px] mb-[8px]" style="color: rgba(176, 184, 193, 0.5);"></i>
+                    <p class="text-[12px]" style="color: rgba(176, 184, 193, 1);">请先连接SSH服务器以浏览文件</p>
+                </div>
+                <div class="hidden" id="fileList">
+                    <!-- 文件列表将在这里动态生成 -->
+                </div>
+            </div>
+        </div>
 
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50" id="settingsModal">
+        <div class="bg-[rgba(42,49,57,1)] rounded-lg w-[500px] max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b border-[rgba(58,65,72,1)]">
+                <h2 class="text-lg font-medium text-white">系统设置</h2>
+                <button class="text-gray-400 hover:text-white" id="closeSettingsBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <!-- Terminal Settings -->
+                <div class="mb-6">
+                    <h3 class="text-md font-medium text-white mb-4">终端设置</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-2">字体大小</label>
+                            <select class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="fontSizeSelect">
+                                <option value="12">12px</option>
+                                <option value="14" selected>14px</option>
+                                <option value="16">16px</option>
+                                <option value="18">18px</option>
+                                <option value="20">20px</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-2">字体族</label>
+                            <select class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="fontFamilySelect">
+                                <option value="'Consolas', 'Monaco', 'Courier New', monospace" selected>Consolas</option>
+                                <option value="'Monaco', 'Menlo', 'Ubuntu Mono', monospace">Monaco</option>
+                                <option value="'Source Code Pro', monospace">Source Code Pro</option>
+                                <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-2">终端主题</label>
+                            <select class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="terminalThemeSelect">
+                                <option value="dark" selected>深色主题</option>
+                                <option value="light">浅色主题</option>
+                                <option value="solarized">Solarized</option>
+                                <option value="monokai">Monokai</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="enableBellCheckbox" class="mr-2">
+                            <label class="text-sm text-gray-300">启用终端响铃</label>
+                        </div>
                     </div>
                 </div>
-
-                <div class="ai-assistant" id="aiAssistant">
-                    <div class="ai-header">
-                        <div class="ai-title">
-                            <i class="fas fa-robot"></i>
-                            <span>AI助手</span>
+                
+                <!-- AI Assistant Settings -->
+                <div class="mb-6">
+                    <h3 class="text-md font-medium text-white mb-4">AI助手设置</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="enableAiCheckbox" class="mr-2" checked>
+                            <label class="text-sm text-gray-300">启用AI助手</label>
                         </div>
-                        <button id="closeAiBtn" class="control-btn">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="ai-config" id="aiConfig" style="display: none;">
-                        <div class="ai-info">
-                            <div class="ai-logo">
-                                <i class="fas fa-robot"></i>
-                                <h3>Kimi AI 助手</h3>
-                            </div>
-                            <p>已内置 Kimi AI 智能助手，无需配置即可使用！</p>
-                            <div class="ai-features">
-                                <div class="feature-item">
-                                    <i class="fas fa-terminal"></i>
-                                    <span>Linux 命令建议</span>
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-cogs"></i>
-                                    <span>系统管理帮助</span>
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-code"></i>
-                                    <span>脚本编写指导</span>
-                                </div>
-                            </div>
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-2">AI模型</label>
+                            <select class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="aiModelSelect">
+                                <option value="gpt-3.5-turbo" selected>GPT-3.5 Turbo</option>
+                                <option value="gpt-4">GPT-4</option>
+                                <option value="claude-3">Claude-3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-2">API密钥</label>
+                            <input type="password" placeholder="输入您的API密钥" class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="apiKeyInput">
                         </div>
                     </div>
-                    
-                    <div class="ai-chat" id="aiChat">
-                        <div class="chat-messages" id="chatMessages"></div>
-                        <div class="chat-input-container">
-                            <input type="text" id="chatInput" placeholder="询问AI助手...">
-                            <button id="sendChatBtn" class="btn btn-primary">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
+                </div>
+                
+                <!-- General Settings -->
+                <div class="mb-6">
+                    <h3 class="text-md font-medium text-white mb-4">通用设置</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="autoSaveCheckbox" class="mr-2" checked>
+                            <label class="text-sm text-gray-300">自动保存连接配置</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="confirmDisconnectCheckbox" class="mr-2">
+                            <label class="text-sm text-gray-300">断开连接时确认</label>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-2">语言</label>
+                            <select class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="languageSelect">
+                                <option value="zh-CN" selected>简体中文</option>
+                                <option value="en-US">English</option>
+                                <option value="ja-JP">日本語</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="flex justify-end gap-3 p-6 border-t border-[rgba(58,65,72,1)]">
+                <button class="px-4 py-2 bg-[rgba(58,65,72,1)] text-gray-300 rounded hover:bg-[rgba(76,84,93,1)]" id="cancelSettingsBtn">取消</button>
+                <button class="px-4 py-2 bg-[rgba(0,112,250,1)] text-white rounded hover:bg-[rgba(0,96,214,1)]" id="saveSettingsBtn">保存设置</button>
+            </div>
+        </div>
+    </div>
 
+    <!-- Saved Connections Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50" id="connectionsModal">
+        <div class="bg-[rgba(42,49,57,1)] rounded-lg w-[600px] max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b border-[rgba(58,65,72,1)]">
+                <h2 class="text-lg font-medium text-white">已保存连接管理</h2>
+                <button class="text-gray-400 hover:text-white" id="closeConnectionsBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <button class="px-3 py-1 bg-[rgba(0,112,250,1)] text-white rounded text-sm hover:bg-[rgba(0,96,214,1)]" id="addConnectionBtn">
+                            <i class="fas fa-plus mr-1"></i>新建连接
+                        </button>
+                        <button class="px-3 py-1 bg-[rgba(58,65,72,1)] text-gray-300 rounded text-sm hover:bg-[rgba(76,84,93,1)]" id="importConnectionsBtn">
+                            <i class="fas fa-upload mr-1"></i>导入
+                        </button>
+                        <button class="px-3 py-1 bg-[rgba(58,65,72,1)] text-gray-300 rounded text-sm hover:bg-[rgba(76,84,93,1)]" id="exportConnectionsBtn">
+                            <i class="fas fa-download mr-1"></i>导出
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" placeholder="搜索连接..." class="px-3 py-1 bg-[rgba(58,65,72,1)] text-white rounded text-sm border border-[rgba(76,84,93,1)]" id="searchConnectionsInput">
+                        <button class="px-3 py-1 bg-[rgba(58,65,72,1)] text-gray-300 rounded text-sm hover:bg-[rgba(76,84,93,1)]" id="searchConnectionsBtn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="space-y-2" id="connectionsList">
+                    <!-- 连接列表将在这里动态生成 -->
+                    <div class="text-center py-8 text-gray-400" id="noConnectionsMessage">
+                        <i class="fas fa-server text-3xl mb-2"></i>
+                        <p>暂无保存的连接</p>
+                        <p class="text-sm">点击"新建连接"开始添加</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Add/Edit Connection Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50" id="editConnectionModal">
+        <div class="bg-[rgba(42,49,57,1)] rounded-lg w-[500px] max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b border-[rgba(58,65,72,1)]">
+                <h2 class="text-lg font-medium text-white" id="editConnectionTitle">新建连接</h2>
+                <button class="text-gray-400 hover:text-white" id="closeEditConnectionBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-300 mb-2">连接名称</label>
+                        <input type="text" placeholder="我的服务器" class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="editConnectionName">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-2">服务器地址</label>
+                            <input type="text" placeholder="example.com" class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="editConnectionHost">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-2">端口</label>
+                            <input type="number" value="22" class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="editConnectionPort">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-300 mb-2">用户名</label>
+                        <input type="text" placeholder="root" class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="editConnectionUsername">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-300 mb-2">认证方式</label>
+                        <select class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="editConnectionAuthMethod">
+                            <option value="password">密码认证</option>
+                            <option value="key">密钥认证</option>
+                        </select>
+                    </div>
+                    <div id="editConnectionPasswordDiv">
+                        <label class="block text-sm text-gray-300 mb-2">密码</label>
+                        <input type="password" placeholder="密码" class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)]" id="editConnectionPassword">
+                    </div>
+                    <div id="editConnectionKeyDiv" style="display: none;">
+                        <label class="block text-sm text-gray-300 mb-2">私钥</label>
+                        <textarea placeholder="-----BEGIN PRIVATE KEY-----" class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)] h-32 resize-none" id="editConnectionPrivateKey"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-300 mb-2">描述 (可选)</label>
+                        <textarea placeholder="连接描述..." class="w-full p-2 bg-[rgba(58,65,72,1)] text-white rounded border border-[rgba(76,84,93,1)] h-20 resize-none" id="editConnectionDescription"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 p-6 border-t border-[rgba(58,65,72,1)]">
+                <button class="px-4 py-2 bg-[rgba(58,65,72,1)] text-gray-300 rounded hover:bg-[rgba(76,84,93,1)]" id="cancelEditConnectionBtn">取消</button>
+                <button class="px-4 py-2 bg-[rgba(0,112,250,1)] text-white rounded hover:bg-[rgba(0,96,214,1)]" id="saveEditConnectionBtn">保存连接</button>
+            </div>
         </div>
     </div>
 

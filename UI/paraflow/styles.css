@@ -1,0 +1,8 @@
+.terminal-text {font-family: "Consolas", "Courier New", monospace; white-space: pre-wrap; color: rgba(176, 184, 193, 1)}
+.connection-inactive {background-color: rgba(255, 84, 91, 0.2)}
+.__paraflow-fa-fas {font-family: "Font Awesome 6 Free"; display: inline-block; line-height: 1; font-weight: 900; font-style: normal}
+.connection-active {background-color: rgba(149, 218, 127, 0.2)}
+.settings-nav-item {margin-bottom: 6px; padding-top: 12px; padding-right: 18px; padding-bottom: 12px; padding-left: 18px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px}
+.settings-toggle input {opacity: 0; width: 0; height: 0}
+.settings-toggle {display: inline-block; position: relative; width: 40px; height: 20px}
+.settings-nav-item-active {background-color: rgba(0, 112, 250, 0.2); color: rgba(0, 112, 250, 1)}

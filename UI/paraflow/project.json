@@ -1,0 +1,22 @@
+{
+  "name": "根据文档设计类似DaisyUI的UI",
+  "created_at": "2025-07-26T19:25:55.828223+00:00",
+  "paraflow_version": "1.0",
+  "screens": [
+    {
+      "id": "8:0",
+      "title": "Main Terminal Interface",
+      "filename": "8:0.html"
+    },
+    {
+      "id": "9:0",
+      "title": "Settings",
+      "filename": "9:0.html"
+    },
+    {
+      "id": "10:0",
+      "title": "Saved Connections",
+      "filename": "10:0.html"
+    }
+  ]
+}

@@ -15,6 +15,57 @@ const io = socketIo(server);
 app.use(express.static('public'));
 app.use(express.json());
 
+// 文件下载API
+app.get('/api/download', (req, res) => {
+  const { path: filePath } = req.query;
+  
+  if (!filePath) {
+    return res.status(400).json({ error: '缺少文件路径参数' });
+  }
+  
+  // 从连接池中找到活跃的SSH连接
+  const activeConnection = Array.from(connections.values())[0];
+  
+  if (!activeConnection) {
+    return res.status(400).json({ error: '没有活跃的SSH连接' });
+  }
+  
+  activeConnection.sftp((err, sftp) => {
+    if (err) {
+      return res.status(500).json({ error: 'SFTP连接失败: ' + err.message });
+    }
+    
+    // 获取文件信息
+    sftp.stat(filePath, (err, stats) => {
+      if (err) {
+        return res.status(404).json({ error: '文件不存在: ' + err.message });
+      }
+      
+      if (stats.isDirectory()) {
+        return res.status(400).json({ error: '不能下载目录' });
+      }
+      
+      // 设置响应头
+      const fileName = path.basename(filePath);
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+      res.setHeader('Content-Type', 'application/octet-stream');
+      res.setHeader('Content-Length', stats.size);
+      
+      // 创建读取流并传输文件
+      const readStream = sftp.createReadStream(filePath);
+      
+      readStream.on('error', (err) => {
+        console.error('文件读取错误:', err);
+        if (!res.headersSent) {
+          res.status(500).json({ error: '文件读取失败: ' + err.message });
+        }
+      });
+      
+      readStream.pipe(res);
+    });
+  });
+});
+
 
 
 
@@ -130,6 +181,42 @@ io.on('connection', (socket) => {
             if (conn) {
               conn.end();
             }
+          });
+          
+          // 处理文件列表请求
+          socket.on('file-list', (data) => {
+            const { path } = data;
+            conn.sftp((err, sftp) => {
+              if (err) {
+                socket.emit('file-list-response', {
+                  success: false,
+                  error: err.message
+                });
+                return;
+              }
+              
+              sftp.readdir(path, (err, list) => {
+                if (err) {
+                  socket.emit('file-list-response', {
+                    success: false,
+                    error: err.message
+                  });
+                  return;
+                }
+                
+                const files = list.map(item => ({
+                  name: item.filename,
+                  type: item.attrs.isDirectory() ? 'directory' : 'file',
+                  size: item.attrs.size,
+                  modified: new Date(item.attrs.mtime * 1000)
+                }));
+                
+                socket.emit('file-list-response', {
+                  success: true,
+                  files: files
+                });
+              });
+            });
           });
         });
       });
