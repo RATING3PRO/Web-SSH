@@ -1,6 +1,6 @@
 # Web SSH Terminal Pro
 
-一个基于Web的SSH终端工具，集成AI助手和代理连接功能。
+一个面向Web开发的SSH终端工具，集成AI助手和代理连接功能。
 
 ## 核心功能
 
