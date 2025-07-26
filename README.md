@@ -4,27 +4,23 @@
 
 ## 核心功能
 
-- **现代化UI设计** - 美观的渐变背景和响应式布局
-- **完整SSH支持** - 密码/密钥认证、实时终端交互
-- **代理连接** - SOCKS4/SOCKS5代理，支持认证
-- **AI智能助手** - 内置Kimi AI助手，提供Linux命令建议
+- **SSH支持** - 密码认证、实时终端交互
+- **AI智能助手** - 内置Kimi K2模型，提供Linux命令建议
 - **连接管理** - 保存和管理常用连接配置
-- **完整终端体验** - 命令历史、快捷键、自动补全
-- **响应式设计** - 完美支持移动设备
-- **专业主题** - 精美的终端和UI主题
+- **终端体验** - 命令历史、快捷键
 
 ## 快速开始
 
-### Windows 用户
-```bash
-# 双击运行
-start.bat
-```
+在线使用(使用服务器向目标连接):
 
 ### 手动安装
 ```bash
 # 安装依赖
 npm install
+
+# 配置环境变量
+cp .env.example .env
+# 编辑 .env 文件，填入你的 Kimi API 密钥
 
 # 启动服务
 npm start
@@ -40,13 +36,8 @@ npm run dev
 ### SSH连接
 1. **基本连接**
    - 填写服务器地址、端口、用户名
-   - 选择密码或密钥认证
+   - 选择密码认证
    - 点击"连接"按钮
-
-2. **代理连接**
-   - 勾选"使用代理连接"
-   - 配置SOCKS4/SOCKS5代理信息
-   - 支持代理用户名密码认证
 
 3. **连接管理**
    - 保存常用连接配置
@@ -64,28 +55,12 @@ npm run dev
    - 获取系统管理建议
    - 代码和配置文件帮助
 
-### 快捷键
-- `Ctrl+C` / `Ctrl+V` - 复制粘贴
-- `↑` / `↓` - 命令历史浏览
-- `Tab` - 命令自动补全
-- `Ctrl+L` - 清屏
-
 ## 技术栈
 
 - **后端**: Node.js + Express + Socket.IO
-- **SSH连接**: ssh2库
-- **代理支持**: socks库（SOCKS4/5）
+- **SSH连接**: ssh2
 - **AI集成**: Kimi AI
-- **前端**: 原生JavaScript + CSS3
-- **UI框架**: Font Awesome图标
-
-## 安全特性
-
-- 所有连接数据仅在本地存储
-- 支持SSH密钥认证
-- 代理连接全程加密
-- AI配置本地存储
-- 建议在HTTPS环境下使用
+- **前端**: JavaScript + CSS3
 
 ## AI助手特色
 
@@ -94,6 +69,26 @@ npm run dev
 - **代码高亮** - AI回复中的代码自动高亮显示
 - **一键复制** - 代码块支持一键复制功能
 - **中文支持** - 完美支持中文对话和命令解释
+
+## 环境变量配置
+
+创建 `.env` 文件并配置以下变量：
+
+```bash
+# Kimi AI 配置（必需）
+KIMI_API_KEY=your_kimi_api_key_here
+KIMI_API_URL=https://api.moonshot.cn/v1/chat/completions
+KIMI_MODEL=moonshot-v1-8k
+
+# 服务器配置（可选）
+PORT=3000
+NODE_ENV=production
+```
+
+**重要提醒：**
+- 请勿将包含真实API密钥的 `.env` 文件提交到版本控制系统
+- 可以复制 `.env.example` 文件作为模板
+- 获取Kimi API密钥请访问：https://platform.moonshot.cn/
 
 ## 部署建议
 
@@ -107,15 +102,3 @@ COPY . .
 EXPOSE 3000
 CMD ["npm", "start"]
 ```
-
-### 环境变量
-- `PORT` - 服务端口（默认3000）
-- `NODE_ENV` - 运行环境
-
-## 贡献
-
-欢迎提交Issue和Pull Request！
-
-## 许可证
-
-MIT License

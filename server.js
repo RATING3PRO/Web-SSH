@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -26,10 +27,17 @@ app.post('/api/ai-chat', async (req, res) => {
   try {
     const { message, context } = req.body;
     
-    // 使用内置的Kimi AI配置
-    const kimiApiUrl = 'https://api.moonshot.cn/v1/chat/completions';
-    const kimiApiKey = 'sk-lQcSoo4PEXBOM0DQODXH87beAIR956QnbdUpLG044AVICGUz';
-    const kimiModel = 'moonshot-v1-8k';
+    // 使用环境变量中的Kimi AI配置
+    const kimiApiUrl = process.env.KIMI_API_URL || 'https://api.moonshot.cn/v1/chat/completions';
+    const kimiApiKey = process.env.KIMI_API_KEY;
+    const kimiModel = process.env.KIMI_MODEL || 'moonshot-v1-8k';
+    
+    if (!kimiApiKey) {
+      return res.json({
+        success: false,
+        error: '请配置KIMI_API_KEY环境变量'
+      });
+    }
     
     const response = await axios.post(kimiApiUrl, {
       model: kimiModel,
